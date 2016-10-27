@@ -1,0 +1,205 @@
+<!DOCTYPE html><html><head><title>Eight Perfect Shuffles</title>
+
+<link rel="stylesheet" type="text/css" href="style.css">
+<link rel="shortcut icon" href="favicon.ico">
+<meta name="viewport" content="width=1000, initial-scale=1">
+
+</head>
+
+<body>
+	<center>
+
+		<table style="position:absolute; left:10px; top:10px; background-color:black;">
+			<td>
+				<a href="#popup1"><img title="Information" src="../jdgmiles.github.io/questionmark.png" style="width:60px; height:60px"></a><br>
+				<a href="https://twitter.com/jimdgmiles" target=blank_><img title="James Miles on Twitter" src="../jdgmiles.github.io/twitter.png" style="width:60px; height:60px"></a><br>
+				<a href="http://jdgmiles.github.io/" target="_blank"><img title="Projects Page" src="../jdgmiles.github.io/jdgm.png" style="width:60px; height:60px"></a><br>
+			</td>
+		</table>
+
+		<div id="popup1" class="overlay">
+			<div class="popup">
+				<a class="close" style="right: 30px;" href="#">&times;</a>
+				<div style="font-family:Georgia; color:white; text-align:center; text-decoration:underline; font-size:38px">8 Perfect Shuffles</div>
+				<span style="font-family:Georgia; font-size:30px; color:white; text-align:justify;"><br>After eight perfect riffle shuffles a deck of playing cards is returned to its original order.<br></span><br>
+			</div>
+		</div>
+
+		<canvas id="canvas" style="padding:0px 80px 0px 80px;"></canvas>
+  </center>
+</body>
+</html>
+
+<script type="text/javascript">
+var field={width:875, height:300};
+var fieldcolor="black";
+var textcolor="white";
+var textxpos=82;
+var textypos=200;
+var startingfps=60;
+var fps=startingfps;
+var shuffletext="1st Shuffle";
+var textfont="50px Georgia";
+var shuffleno=1;
+var time=0;
+
+var c=[];
+c[1] = new Image(); c[1].src = "Card Images/CA.png";
+c[2] = new Image(); c[2].src = "Card Images/C2.png";
+c[3] = new Image(); c[3].src = "Card Images/C3.png";
+c[4] = new Image(); c[4].src = "Card Images/C4.png";
+c[5] = new Image(); c[5].src = "Card Images/C5.png";
+c[6] = new Image(); c[6].src = "Card Images/C6.png";
+c[7] = new Image(); c[7].src = "Card Images/C7.png";
+c[8] = new Image(); c[8].src = "Card Images/C8.png";
+c[9] = new Image(); c[9].src = "Card Images/C9.png";
+c[10] = new Image(); c[10].src = "Card Images/C10.png";
+c[11] = new Image(); c[11].src = "Card Images/CJ.png";
+c[12] = new Image(); c[12].src = "Card Images/CQ.png";
+c[13] = new Image(); c[13].src = "Card Images/CK.png";
+c[14] = new Image(); c[14].src = "Card Images/DA.png";
+c[15] = new Image(); c[15].src = "Card Images/D2.png";
+c[16] = new Image(); c[16].src = "Card Images/D3.png";
+c[17] = new Image(); c[17].src = "Card Images/D4.png";
+c[18] = new Image(); c[18].src = "Card Images/D5.png";
+c[19] = new Image(); c[19].src = "Card Images/D6.png";
+c[20] = new Image(); c[20].src = "Card Images/D7.png";
+c[21] = new Image(); c[21].src = "Card Images/D8.png";
+c[22] = new Image(); c[22].src = "Card Images/D9.png";
+c[23] = new Image(); c[23].src = "Card Images/D10.png";
+c[24] = new Image(); c[24].src = "Card Images/DJ.png";
+c[25] = new Image(); c[25].src = "Card Images/DQ.png";
+c[26] = new Image(); c[26].src = "Card Images/DK.png";
+c[27] = new Image(); c[27].src = "Card Images/HA.png";
+c[28] = new Image(); c[28].src = "Card Images/H2.png";
+c[29] = new Image(); c[29].src = "Card Images/H3.png";
+c[30] = new Image(); c[30].src = "Card Images/H4.png";
+c[31] = new Image(); c[31].src = "Card Images/H5.png";
+c[32] = new Image(); c[32].src = "Card Images/H6.png";
+c[33] = new Image(); c[33].src = "Card Images/H7.png";
+c[34] = new Image(); c[34].src = "Card Images/H8.png";
+c[35] = new Image(); c[35].src = "Card Images/H9.png";
+c[36] = new Image(); c[36].src = "Card Images/H10.png";
+c[37] = new Image(); c[37].src = "Card Images/HJ.png";
+c[38] = new Image(); c[38].src = "Card Images/HQ.png";
+c[39] = new Image(); c[39].src = "Card Images/HK.png";
+c[40] = new Image(); c[40].src = "Card Images/SA.png";
+c[41] = new Image(); c[41].src = "Card Images/S2.png";
+c[42] = new Image(); c[42].src = "Card Images/S3.png";
+c[43] = new Image(); c[43].src = "Card Images/S4.png";
+c[44] = new Image(); c[44].src = "Card Images/S5.png";
+c[45] = new Image(); c[45].src = "Card Images/S6.png";
+c[46] = new Image(); c[46].src = "Card Images/S7.png";
+c[47] = new Image(); c[47].src = "Card Images/S8.png";
+c[48] = new Image(); c[48].src = "Card Images/S9.png";
+c[49] = new Image(); c[49].src = "Card Images/S10.png";
+c[50] = new Image(); c[50].src = "Card Images/SJ.png";
+c[51] = new Image(); c[51].src = "Card Images/SQ.png";
+c[52] = new Image(); c[52].src = "Card Images/SK.png";
+var d=[];
+var resetanimation=0;
+
+var canvas = document.getElementById("canvas"),
+    ctx = canvas.getContext("2d");
+
+canvas.width = field.width;
+canvas.height = field.height;
+
+function draw(){
+
+	if(time<50){
+		ctx.fillStyle=fieldcolor;
+		ctx.fillRect(0, 0, field.width, field.height);
+		ctx.font=textfont;
+		ctx.fillStyle=textcolor;
+		ctx.fillText(shuffletext, textxpos, textypos);
+		for(i=1; i<53; i++){ctx.drawImage(c[i], 15*i, 1);}
+	}
+
+	if(time>49 && time<80){
+		ctx.fillStyle=fieldcolor;
+		ctx.fillRect(0, 0, field.width, field.height);
+		ctx.font=textfont;
+		ctx.fillStyle=textcolor;
+		ctx.fillText(shuffletext, textxpos, textypos);
+		for(i=1; i<27; i++){ctx.drawImage(c[i], 15*i, 1);}
+		for(i=27; i<53; i++){ctx.drawImage(c[i], 15*i, 1+4*(time-49));}
+
+	}
+
+	if(time>92 && time<108){
+		fps=2*startingfps/3;
+		ctx.fillStyle=fieldcolor;
+		ctx.fillRect(0, 0, field.width, field.height);
+		ctx.font=textfont;
+		ctx.fillStyle=textcolor;
+		ctx.fillText(shuffletext, textxpos, textypos);
+		ctx.drawImage(c[1], 15,1);
+		for(i=2; i<27; i++){ctx.drawImage(c[i], 15*i+(i-1)*(time-92), 1);}
+		for(i=27; i<53; i++){ctx.drawImage(c[i], 15*i-(52-i)*(time-92), 121);}
+	}
+
+	if(time==110){
+		shuffleno=(shuffleno%8)+1;
+		if(shuffleno==1){shuffletext="Original Order"; resetanimation=1;}
+		if(shuffleno==2){shuffletext="2nd Shuffle";}
+		if(shuffleno==3){shuffletext="3rd Shuffle";}
+		if(shuffleno==4){shuffletext="4th Shuffle";}
+		if(shuffleno==5){shuffletext="5th Shuffle";}
+		if(shuffleno==6){shuffletext="6th Shuffle";}
+		if(shuffleno==7){shuffletext="7th Shuffle";}
+		if(shuffleno==8){shuffletext="8th Shuffle";}
+	}
+
+	if(time>119 && time<150){
+		fps=startingfps;
+		ctx.fillStyle=fieldcolor;
+		ctx.fillRect(0, 0, field.width, field.height);
+		ctx.font=textfont;
+		ctx.fillStyle=textcolor;
+		ctx.fillText(shuffletext, textxpos, textypos);
+		ctx.drawImage(c[1], 15,1);
+		for(i=1; i<52; i++){
+			if(i%2==0){ctx.drawImage(c[(i/2)+1], 15*((i/2)+1)+((i/2))*(15), 1);}
+			if(i%2==1){ctx.drawImage(c[(i-1)/2+27], 15*((i-1)/2+27)-(52-((i-1)/2+27))*(15), 121-4*(time-119));}
+		}
+	}
+
+	if(time==160){
+		for(i=1; i<27; i++){d[(2*i)-1]=c[i]; d[2*i]=c[i+26];}
+		for(i=1; i<53; i++){c[i]=d[i];}
+		if(!resetanimation){time=0;}
+	}
+
+	if(time>399){
+		fps=startingfps*1;
+		ctx.fillStyle=fieldcolor;
+		ctx.fillRect(0, 0, field.width, field.height);
+		ctx.font=textfont;
+		ctx.fillStyle=textcolor;
+		ctx.fillText(shuffletext, textxpos, textypos);
+		for(i=1; i<53; i++){if(time > 452-(53-i) && time <460+i){ctx.drawImage(c[i], 15*i, 121-(Math.abs(4*time-1720-(4*i))));} else{ctx.drawImage(c[i], 15*i, 1);}}
+		if(time==440){shuffletext="1st Shuffle";}
+	}
+
+	if(time>570){time=0; resetanimation=0; fps=startingfps;}
+
+
+
+	time++;
+
+	setTimeout(draw, 1000/fps);
+
+
+}
+
+var imagesLoaded=0;
+
+for(i=1; i<53; i++){
+	c[i].onload = function(){
+		imagesLoaded++;
+		if(imagesLoaded==52){setTimeout(draw, 100);}
+	}
+}
+
+</script>
